@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.ShowpicMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Showpic">
+    <id column="showPicId" jdbcType="VARCHAR" property="showpicid" />
+    <result column="showPicType" jdbcType="VARCHAR" property="showpictype" />
+    <result column="showPicName" jdbcType="VARCHAR" property="showpicname" />
+  </resultMap>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Showpic">
+    insert into showpic (showPicId, showPicType, showPicName)
+    values (#{showpicid,jdbcType=VARCHAR}, #{showpictype,jdbcType=VARCHAR}, #{showpicname,jdbcType=VARCHAR})
+  </insert>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select showPicId, showPicType, showPicName
+    from showpic
+  </select>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.ItemMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Item">
+    <id column="itemId" jdbcType="VARCHAR" property="itemid" />
+    <result column="orderId" jdbcType="VARCHAR" property="orderid" />
+    <result column="productId" jdbcType="VARCHAR" property="productid" />
+    <result column="productName" jdbcType="VARCHAR" property="productname" />
+    <result column="productNum" jdbcType="INTEGER" property="productnum" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from item
+    where itemId = #{itemid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Item">
+    insert into item (itemId, orderId, productId, 
+      productName, productNum, price, 
+      color, size)
+    values (#{itemid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, #{productid,jdbcType=VARCHAR}, 
+      #{productname,jdbcType=VARCHAR}, #{productnum,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, 
+      #{color,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Item">
+    update item
+    set orderId = #{orderid,jdbcType=VARCHAR},
+      productId = #{productid,jdbcType=VARCHAR},
+      productName = #{productname,jdbcType=VARCHAR},
+      productNum = #{productnum,jdbcType=INTEGER},
+      price = #{price,jdbcType=DOUBLE},
+      color = #{color,jdbcType=VARCHAR},
+      size = #{size,jdbcType=VARCHAR}
+    where itemId = #{itemid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select itemId, orderId, productId, productName, productNum, price, color, size
+    from item
+    where itemId = #{itemid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select itemId, orderId, productId, productName, productNum, price, color, size
+    from item
+  </select>
+  
+</mapper>

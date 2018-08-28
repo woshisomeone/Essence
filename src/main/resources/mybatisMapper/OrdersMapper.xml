@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.OrdersMapper">
+
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Orders">
+    <id column="orderId" jdbcType="VARCHAR" property="orderid" />
+    <result column="userId" jdbcType="VARCHAR" property="userid" />
+    <result column="totalMoney" jdbcType="DOUBLE" property="totalmoney" />
+    <result column="orderStatus" jdbcType="INTEGER" property="orderstatus" />
+    <result column="createTime" jdbcType="DATE" property="createtime" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from orders
+    where orderId = #{orderid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Orders">
+    insert into orders (orderId, userId, totalMoney, 
+      orderStatus, createTime)
+    values (#{orderid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{totalmoney,jdbcType=DOUBLE}, 
+      #{orderstatus,jdbcType=INTEGER}, #{createtime,jdbcType=DATE})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Orders">
+    update orders
+    set userId = #{userid,jdbcType=VARCHAR},
+      totalMoney = #{totalmoney,jdbcType=DOUBLE},
+      orderStatus = #{orderstatus,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=DATE}
+    where orderId = #{orderid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select orderId, userId, totalMoney, orderStatus, createTime
+    from orders
+    where orderId = #{orderid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select orderId, userId, totalMoney, orderStatus, createTime
+    from orders
+  </select>
+  
+  
+  <select id="selectFinishByUser" resultMap="BaseResultMap">
+    select orderId, userId, totalMoney, orderStatus, createTime
+    from orders where orderStatus='1'
+  </select>
+  
+  <select id="selectNotFinishByUser" resultMap="BaseResultMap">
+    select orderId, userId, totalMoney, orderStatus, createTime
+    from orders where orderStatus='0'
+  </select>
+  
+ <resultMap type="com.essence.pojo.OrdersExt" id="findOrder_itemRsm">
+		<id column="orderId" property="orderid"/>
+		  <result column="userId" jdbcType="VARCHAR" property="userid" />
+	    <result column="totalMoney" jdbcType="DOUBLE" property="totalmoney" />
+	    <result column="orderStatus" jdbcType="INTEGER" property="orderstatus" />
+	    <result column="createTime" jdbcType="DATE" property="createtime" />
+	    
+		<collection property="itemlist"  ofType="com.essence.pojo.ItemExt">
+		<id column="itemId" jdbcType="VARCHAR" property="itemid" />
+	    <result column="orderId" jdbcType="VARCHAR" property="orderid" />
+	    <result column="productId" jdbcType="VARCHAR" property="productid" />
+	    <result column="productName" jdbcType="VARCHAR" property="productname" />
+	    <result column="productNum" jdbcType="INTEGER" property="productnum" />
+	    <result column="price" jdbcType="DOUBLE" property="price" />
+	    <result column="color" jdbcType="VARCHAR" property="color" />
+	    <result column="size" jdbcType="VARCHAR" property="size" />
+	    
+	    <association property="goodspic"  jdbcType="VARCHAR" javaType="String">
+		<result column="goodsPic" property="goodspic"/>
+		</association>
+		<association property="goodsid"  jdbcType="VARCHAR" javaType="String">
+		<result column="goodsid" property="goodsid"/>
+		</association>
+	</collection>		
+	</resultMap>
+	<select id="selectNotFinishOrder_item" resultMap="findOrder_itemRsm">
+		select orders.*,item.* ,goodspic,goods.goodsid from orders,item,goods,product
+		where orders.orderId=item.orderId and 
+		orders.userId=#{userid} and orderStatus='0'
+		and product.productId=item.productId
+		and product.goodsId=goods.goodsId
+	</select>
+	
+  <select id="selectFinishOrder_item" resultMap="findOrder_itemRsm">
+		select orders.*,item.* ,goodspic,goods.goodsid from orders,item,goods,product
+		where orders.orderId=item.orderId and 
+		orders.userId=#{userid} and orderStatus='1'
+		and product.productId=item.productId
+		and product.goodsId=goods.goodsId
+	</select>
+	
+</mapper>

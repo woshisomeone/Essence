@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Product">
+    <id column="productId" jdbcType="VARCHAR" property="productid" />
+    <result column="goodsId" jdbcType="VARCHAR" property="goodsid" />
+    <result column="color" jdbcType="CHAR" property="color" />
+    <result column="size" jdbcType="CHAR" property="size" />
+    <result column="productNum" jdbcType="INTEGER" property="productnum" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product
+    where productId = #{productid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Product">
+    insert into product (productId, goodsId, color, 
+      size, productNum)
+    values (#{productid,jdbcType=VARCHAR}, #{goodsid,jdbcType=VARCHAR}, #{color,jdbcType=CHAR}, 
+      #{size,jdbcType=CHAR}, #{productnum,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Product">
+    update product
+    set goodsId = #{goodsid,jdbcType=VARCHAR},
+      color = #{color,jdbcType=CHAR},
+      size = #{size,jdbcType=CHAR},
+      productNum = #{productnum,jdbcType=INTEGER}
+    where productId = #{productid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select productId, goodsId, color, size, productNum
+    from product
+    where productId = #{productid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select productId, goodsId, color, size, productNum
+    from product
+  </select>
+  
+  <select id="selectProductByGoodsId" resultMap="BaseResultMap">
+  	select * from product
+  	where goodsId=#{goodsid}
+  </select>
+  
+    <select id="sizeList" resultType="String">
+  		SELECT DISTINCT size from product where goodsId=#{goodsid}
+  </select>
+  
+    <select id="colorList" resultType="String">
+  		SELECT DISTINCT color from product where goodsId=#{goodsid}
+  </select>
+  
+     <select id="product"  resultMap="BaseResultMap">
+		  SELECT * from product where goodsid=#{goodsid} and size=#{size} and color=#{color}
+  </select>
+  
+</mapper>

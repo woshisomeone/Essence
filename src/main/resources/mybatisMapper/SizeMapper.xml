@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.SizeMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Size">
+    <id column="sizeId" jdbcType="VARCHAR" property="sizeid" />
+    <result column="typeId" jdbcType="VARCHAR" property="typeid" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from size
+    where sizeId = #{sizeid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Size">
+    insert into size (sizeId, typeId, size)
+    values (#{sizeid,jdbcType=VARCHAR}, #{typeid,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Size">
+    update size
+    set typeId = #{typeid,jdbcType=VARCHAR},
+     size = #{size,jdbcType=VARCHAR}
+    where sizeId = #{sizeid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select sizeId, typeId, size
+    from size
+    where sizeId = #{sizeid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select sizeId, typeId, size
+    from size
+  </select>
+  
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.TypeMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Type">
+    <id column="typeId" jdbcType="VARCHAR" property="typeid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="parentId" jdbcType="VARCHAR" property="parentid" />
+    <result column="isShow" jdbcType="INTEGER" property="isshow" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from type
+    where typeId = #{typeid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.essence.pojo.Type">
+    insert into type (typeId, type, parentId,isShow)
+    values (#{typeid,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{parentid},#{isshow,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Type">
+    update type
+    set type = #{type,jdbcType=VARCHAR},parentId=#{parentid},
+      isShow = #{isshow,jdbcType=INTEGER}
+    where typeId = #{typeid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select typeId, type,parentId, isShow
+    from type
+    where typeId = #{typeid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select typeId,parentId, type, isShow
+    from type
+  </select>
+  
+	<select id="selectParentType" resultMap="BaseResultMap">
+		SELECT DISTINCT c.* from type AS c RIGHT  JOIN type AS p ON c.typeId=p.parentId where c.type != ''
+	</select>
+	
+	<select id="selectChildType" resultMap="BaseResultMap">
+		SELECT DISTINCT p.*  from type AS c Left  JOIN type AS p ON c.typeId=p.parentId where p.type != ''
+	</select>
+	
+	<resultMap id="TypeExt" type="com.essence.pojo.TypeExt">
+   <id column="typeId" jdbcType="VARCHAR" property="typeid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="parentId" jdbcType="VARCHAR" property="parentid" />
+    <result column="isShow" jdbcType="INTEGER" property="isshow" />
+    <collection property="ctypelist" ofType="com.essence.pojo.Type">
+     <id column="cid" jdbcType="VARCHAR" property="typeid" />
+    <result column="ctype" jdbcType="VARCHAR" property="type" />
+    </collection>
+    
+  </resultMap>
+	<select id="selectParentAndChild" resultMap="TypeExt">
+	SELECT DISTINCT c.*,p.typeId cid,p.type as ctype 
+	from type AS c RIGHT  JOIN type AS p ON c.typeId=p.parentId
+	 where c.type != '' 
+	</select>
+	
+</mapper>
+
+	

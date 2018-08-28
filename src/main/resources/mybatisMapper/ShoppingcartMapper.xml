@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.ShoppingcartMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Shoppingcart">
+    <id column="shoppingCarId" jdbcType="VARCHAR" property="shoppingcarid" />
+    <result column="userId" jdbcType="VARCHAR" property="userid" />
+    <result column="productId" jdbcType="VARCHAR" property="productid" />
+    <result column="productNum" jdbcType="INTEGER" property="productnum" />
+    <result column="size" jdbcType="CHAR" property="size" />
+    <result column="color" jdbcType="CHAR" property="color" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="isCheck" jdbcType="INTEGER" property="ischeck" />
+    <result column="totalMoney" jdbcType="DOUBLE" property="totalmoney" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from shoppingcart
+    where shoppingCarId = #{shoppingcarid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Shoppingcart">
+    insert into shoppingcart (shoppingCarId, userId, productId, 
+      productNum, size, color, 
+      price, isCheck, totalMoney
+      )
+    values (#{shoppingcarid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{productid,jdbcType=VARCHAR}, 
+      #{productnum,jdbcType=INTEGER}, #{size,jdbcType=CHAR}, #{color,jdbcType=CHAR}, 
+      #{price,jdbcType=DOUBLE}, #{ischeck,jdbcType=INTEGER}, #{totalmoney,jdbcType=DOUBLE}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Shoppingcart">
+    update shoppingcart
+    set userId = #{userid,jdbcType=VARCHAR},
+      productId = #{productid,jdbcType=VARCHAR},
+      productNum = #{productnum,jdbcType=INTEGER},
+      size = #{size,jdbcType=CHAR},
+      color = #{color,jdbcType=CHAR},
+      price = #{price,jdbcType=DOUBLE},
+      isCheck = #{ischeck,jdbcType=INTEGER},
+      totalMoney = #{totalmoney,jdbcType=DOUBLE}
+    where shoppingCarId = #{shoppingcarid,jdbcType=VARCHAR}
+  </update>
+  
+    <update id="updateNumberById" parameterType="com.essence.pojo.Shoppingcart">
+    update shoppingcart
+    set productNum = #{productnum,jdbcType=INTEGER}
+    where shoppingCarId = #{shoppingcarid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select shoppingCarId, userId, productId, productNum, size, color, price, isCheck, 
+    totalMoney
+    from shoppingcart
+    where shoppingCarId = #{shoppingcarid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select shoppingCarId, userId, productId, productNum, size, color, price, isCheck, 
+    totalMoney
+    from shoppingcart
+  </select>
+  
+  <resultMap type="com.essence.pojo.ShoppingCartExt" id="shoppingCartExt">
+  	 <id column="shoppingCarId" jdbcType="VARCHAR" property="shoppingcarid" />
+    <result column="userId" jdbcType="VARCHAR" property="userid" />
+    <result column="productId" jdbcType="VARCHAR" property="productid" />
+    <result column="productNum" jdbcType="INTEGER" property="productnum" />
+    <result column="size" jdbcType="CHAR" property="size" />
+    <result column="color" jdbcType="CHAR" property="color" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="isCheck" jdbcType="INTEGER" property="ischeck" />
+    <result column="totalMoney" jdbcType="DOUBLE" property="totalmoney" />
+    <result column="goodsName" property="goodsname"/>
+    <result column="goodsDescrib" property="goodsdescrib"/>
+    <result column="goodsPic" property="goodspic"/>
+  </resultMap>
+  
+  <select id="selectCartAllProdcut" resultMap="shoppingCartExt">
+	  SELECT cart.*,goods.goodsName,goods.goodsDescrib,goods.goodsPic from shoppingcart cart,goods,product where userid=#{userid}
+	 and cart.productid= product.productId and product.goodsId=goods.goodsId
+  </select>
+  
+  <select id="selectCount" resultType="java.lang.Integer">
+  SELECT count(*) totalnum from shoppingcart where userid=#{userid}
+  </select>
+  
+	<select id="selectByColorandSize" resultMap="BaseResultMap">
+	SELECT * from shoppingcart where  userid=#{userid} and size=#{size} and color=#{color} and productid=#{productid}
+	</select>
+	
+	<update id="updateProductNum" >
+		update shoppingcart set productnum=productnum+#{num} where  userid=#{userid} and size=#{size} and color=#{color} and productid=#{productid} 
+	</update>
+
+	<select id="selectExtById" resultMap="shoppingCartExt">
+	SELECT  cart.*,goods.goodsName,goods.goodsDescrib,goods.goodsPic from shoppingcart cart,goods,product 
+	where shoppingCarId=#{shoppingcarid} and cart.productid= product.productId and product.goodsId=goods.goodsId
+	</select>
+
+</mapper>

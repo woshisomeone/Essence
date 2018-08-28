@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.User">
+    <id column="userId" jdbcType="VARCHAR" property="userid" />
+    <result column="userName" jdbcType="VARCHAR" property="username" />
+    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="createTime" jdbcType="DATE" property="createtime" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from user
+    where userId = #{userid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.User">
+    insert into user (userId, userName, pwd, 
+      sex, phone, createTime)
+    values (#{userid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=CHAR}, #{phone,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.User">
+    update user
+    set userName = #{username,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=CHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=DATE}
+    where userId = #{userid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select userId, userName, pwd, sex, phone, createTime
+    from user
+    where userId = #{userid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPhoneAndPwd" resultMap="BaseResultMap">
+    select userId, userName, pwd, sex, phone, createTime
+    from user
+    where phone = #{phone,jdbcType=VARCHAR} and pwd=#{pwd,jdbcType=VARCHAR}
+  </select>
+ 
+  <select id="selectAll" resultMap="BaseResultMap">
+    select userId, userName, pwd, sex, phone, createTime
+    from user
+  </select>
+</mapper>

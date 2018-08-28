@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.AdminMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Admin">
+    <id column="adminId" jdbcType="VARCHAR" property="adminid" />
+    <result column="adminName" jdbcType="VARCHAR" property="adminname" />
+    <result column="adminPwd" jdbcType="VARCHAR" property="adminpwd" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from admin
+    where adminId = #{adminid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Admin">
+    insert into admin (adminId, adminName, adminPwd )
+    values (#{adminid,jdbcType=VARCHAR}, #{adminname,jdbcType=VARCHAR}, #{adminpwd,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Admin">
+    update admin
+    set adminName = #{adminname,jdbcType=VARCHAR},
+      adminPwd = #{adminpwd,jdbcType=VARCHAR}
+    where adminId = #{adminid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select adminId, adminName, adminPwd
+    from admin
+    where adminId = #{adminid,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="selectByIdAndPwd"  resultMap="BaseResultMap">
+    select adminId, adminName, adminPwd
+    from admin
+    where adminId = #{adminid,jdbcType=VARCHAR} and adminPwd =#{adminpwd}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select adminId, adminName, adminPwd
+    from admin
+  </select>
+  
+</mapper>

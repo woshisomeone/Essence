@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.AddressMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Address">
+    <id column="addressId" jdbcType="VARCHAR" property="addressid" />
+    <result column="userId" jdbcType="VARCHAR" property="userid" />
+    <result column="contactName" jdbcType="VARCHAR" property="contactname" />
+    <result column="contactPhone" jdbcType="VARCHAR" property="contactphone" />
+    <result column="province" jdbcType="CHAR" property="province" />
+    <result column="city" jdbcType="CHAR" property="city" />
+    <result column="detailAddr" jdbcType="VARCHAR" property="detailaddr" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createTime" jdbcType="DATE" property="createtime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from address
+    where addressId = #{addressid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Address">
+    insert into address (addressId, userId, contactName, 
+      contactPhone, province, city, 
+      detailAddr, status, createTime
+      )
+    values (#{addressid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{contactname,jdbcType=VARCHAR}, 
+      #{contactphone,jdbcType=VARCHAR}, #{province,jdbcType=CHAR}, #{city,jdbcType=CHAR}, 
+      #{detailaddr,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Address">
+    update address
+    set userId = #{userid,jdbcType=VARCHAR},
+      contactName = #{contactname,jdbcType=VARCHAR},
+      contactPhone = #{contactphone,jdbcType=VARCHAR},
+      province = #{province,jdbcType=CHAR},
+      city = #{city,jdbcType=CHAR},
+      detailAddr = #{detailaddr,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=DATE}
+    where addressId = #{addressid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select addressId, userId, contactName, contactPhone, province, city, detailAddr, 
+    status, createTime
+    from address
+    where addressId = #{addressid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select addressId, userId, contactName, contactPhone, province, city, detailAddr, 
+    status, createTime
+    from address
+  </select>
+  
+  <update id="updateStatus"  parameterType="String">
+  	update address set status='0' where status='1' and userid=#{userid}
+  </update>
+  
+  <select id="selectCount" parameterType="String" resultType="Integer">
+  	select count(*) from address where userid=#{userid}
+  </select>
+  
+  <select id="selectDefault" parameterType="String" resultMap="BaseResultMap">
+  SELECT * from address where userid=#{userid} and status='1'
+  </select>
+  
+</mapper>

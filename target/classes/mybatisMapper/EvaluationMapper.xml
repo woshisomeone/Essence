@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.EvaluationMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Evaluation">
+    <id column="evaluationId" jdbcType="VARCHAR" property="evaluationid" />
+    <result column="orderId" jdbcType="VARCHAR" property="orderid" />
+    <result column="productId" jdbcType="VARCHAR" property="productid" />
+    <result column="userId" jdbcType="VARCHAR" property="userid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="qulity" jdbcType="VARCHAR" property="qulity" />
+    <result column="suit" jdbcType="VARCHAR" property="suit" />
+    <result column="look" jdbcType="VARCHAR" property="look" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from evaluation
+    where evaluationId = #{evaluationid,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByPrimaryKeyAndUser" parameterType="java.lang.String">
+    delete from evaluation
+    where evaluationId = #{evaluationid,jdbcType=VARCHAR} and userId=#{userid}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Evaluation">
+    insert into evaluation (evaluationId, orderId, productId, 
+      userId, status, qulity, 
+      suit, look, message
+      )
+    values (#{evaluationid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, #{productid,jdbcType=VARCHAR}, 
+      #{userid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{qulity,jdbcType=VARCHAR}, 
+      #{suit,jdbcType=VARCHAR}, #{look,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Evaluation">
+    update evaluation
+    set orderId = #{orderid,jdbcType=VARCHAR},
+      productId = #{productid,jdbcType=VARCHAR},
+      userId = #{userid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      qulity = #{qulity,jdbcType=VARCHAR},
+      suit = #{suit,jdbcType=VARCHAR},
+      look = #{look,jdbcType=VARCHAR},
+      message = #{message,jdbcType=VARCHAR}
+    where evaluationId = #{evaluationid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select evaluationId, orderId, productId, userId, status, qulity, suit, look, message
+    from evaluation
+    where evaluationId = #{evaluationid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select evaluationId, orderId, productId, userId, status, qulity, suit, look, message
+    from evaluation
+  </select>
+  
+    <select id="selectAllByGoods" resultType="com.essence.pojo.EvaluationExt1">
+   select evaluation.*,username  from evaluation ,goods,product,user
+   where evaluation.productId=product.productId
+   and product.goodsId=goods.goodsId and goods.goodsId=#{goodsid}
+   and evaluation.userid=user.userid
+  </select>
+  
+  <select id="selectByProductAndUser" resultMap="BaseResultMap">
+   SELECT evaluation.* from evaluation 
+   where evaluation.productId=#{productid}
+   and userid=#{userid} and orderid=#{orderid}
+  </select>
+  
+    <resultMap id="ExtMap" type="com.essence.pojo.EvaluationExt">
+    <result column="q1" property="q1" />
+    <result column="q2" property="q2" />
+    <result column="q3"  property="q3" />
+    <result column="s1" property="s1" />
+    <result column="s2"  property="s2" />
+    <result column="s3" property="s3" />
+    <result column="l1" property="l1" />
+    <result column="l3" property="l3" />
+  </resultMap>
+  <select id="countTag"   resultMap="ExtMap">
+SELECT 
+       SUM( CASE WHEN qulity = '满意' THEN 
+                      1 ELSE 0 END)as 'q3',  
+       SUM( CASE WHEN qulity = '一般' THEN 
+                      1 ELSE 0 END)as 'q2',
+		SUM( CASE WHEN qulity = '待改善' THEN 
+                      1 ELSE 0 END)as 'q1',
+		SUM( CASE WHEN suit = '合适' THEN 
+                      1 ELSE 0 END)as 's3',  
+       SUM( CASE WHEN suit = '偏大' THEN 
+                      1 ELSE 0 END)as 's2',
+		SUM( CASE WHEN suit = '偏小' THEN 
+                      1 ELSE 0 END)as 's1',
+		SUM( CASE WHEN look = '很美' THEN 
+                      1 ELSE 0 END)as 'l3',  
+       SUM( CASE WHEN look = '挺满意' THEN 
+                      1 ELSE 0 END)as 'l2',
+		SUM( CASE WHEN look = '有点小失望' THEN 
+                      1 ELSE 0 END)as 'l1'
+from evaluation,goods,product
+ where evaluation.productId=product.productId
+ and product.goodsId=goods.goodsId and goods.goodsId=#{goodsid}
+  </select>
+  
+  
+</mapper>

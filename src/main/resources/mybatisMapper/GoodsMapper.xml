@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.essence.dao.GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.essence.pojo.Goods">
+    <id column="goodsId" jdbcType="VARCHAR" property="goodsid" />
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsname" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="goodsDescrib" jdbcType="VARCHAR" property="goodsdescrib" />
+    <result column="totalNum" jdbcType="INTEGER" property="totalnum" />
+    <result column="goodsPic" jdbcType="VARCHAR" property="goodspic" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from goods
+    where goodsId = #{goodsid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.essence.pojo.Goods">
+    insert into goods (goodsId, goodsName, price, 
+      type, goodsDescrib, totalNum, 
+      goodsPic,createTime)
+    values (#{goodsid,jdbcType=VARCHAR}, #{goodsname,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, 
+      #{type,jdbcType=VARCHAR}, #{goodsdescrib,jdbcType=VARCHAR}, #{totalnum,jdbcType=INTEGER}, 
+      #{goodspic,jdbcType=VARCHAR},#{createtime})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.essence.pojo.Goods">
+    update goods
+    set goodsName = #{goodsname,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      type = #{type,jdbcType=VARCHAR},
+      goodsDescrib = #{goodsdescrib,jdbcType=VARCHAR},
+      totalNum = #{totalnum,jdbcType=INTEGER},
+      goodsPic = #{goodspic,jdbcType=VARCHAR}
+      createTime = #{createtime}
+    where goodsId = #{goodsid,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select goodsId, goodsName, price, type, goodsDescrib, totalNum, goodsPic,createTime
+    from goods
+    where goodsId = #{goodsid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select goodsId, goodsName, price, type, goodsDescrib, totalNum, goodsPic,createTime
+    from goods
+  </select>
+  
+  <sql id="WhereClause">
+  		<if test="items!=null">
+  			<if test="items.ctype!='' and  items.ctype!=null">
+  					and type=#{items.ctype}
+  			</if>
+  			<if test="items.ptype!='' and items.ptype!=null">
+  			and type in (SELECT DISTINCT p.type as ctype 
+			from type AS c RIGHT  JOIN type AS p ON c.typeId=p.parentId
+			where c.type != '' and c.type=#{items.ptype})
+  			</if>
+  			<if test="items.maxprice!='' and items.maxprice!=null">
+  				and price &lt; #{items.maxprice}
+  			</if>
+  			<if test="items.minprice!='' and items.minprice!=null">
+  				and price &gt; #{items.minprice}
+  			</if>
+  			<if test="items.color!='' and items.color!=null">
+  				and color=#{items.color}
+  				and goods.goodsId=product.goodsId
+  			</if>
+  		</if>
+		
+  </sql>
+  
+    <select id="selectPageByItems" resultMap="BaseResultMap">
+    select DISTINCT goods.*  from goods ,product
+    <where>
+  		<include refid="WhereClause"></include>
+    </where>
+    <if test="items.order!='' and items.order!=null">
+    	 <if test="items.order=='asce'">
+  				ORDER BY price asc
+  		</if>
+  		 <if test="items.order=='desc'">
+  				ORDER BY price DESC
+  		</if>
+  	</if>
+     limit #{currentPage},#{pageSize}
+  </select>
+  
+    <select id="selectAllByPage" resultMap="BaseResultMap">
+    select goodsId, goodsName, price, type, goodsDescrib, totalNum, goodsPic,createTime
+    from goods 
+    <where>
+        <if test="ctype!=''">
+    			and type=#{ctype}
+  		</if>
+  		 <if test="ptype!=''">
+    		and type in (SELECT DISTINCT p.type as ctype 
+			from type AS c RIGHT  JOIN type AS p ON c.typeId=p.parentId
+			where c.type != '' and c.type=#{ptype})
+  		</if>
+    </where>
+     limit #{currentPage},#{pageSize}
+  </select>
+  
+  
+  <select id="updateGoodsShowPic" resultType="Integer">
+  		update goods
+  		set goodsPic=#{goodspic} where goodsId=#{goodsid}
+  </select>
+  
+    <select id="count" resultType="Integer">
+  		 select count(DISTINCT  goods.goodsId) count  from goods ,product 
+  	<where>
+  		 goods.goodsId=product.goodsId 
+  		<include refid="WhereClause"></include>
+    </where>
+  </select>
+  
+ 
+</mapper>
